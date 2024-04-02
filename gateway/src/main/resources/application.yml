@@ -1,0 +1,37 @@
+#logging:
+#  level:
+#    root: DEBUG
+#    org.springframework.web: DEBUG
+
+
+server:
+  port: 8888
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: gateway_1
+  cloud:
+    gateway:
+      routes:
+        - id: microservice_1
+          uri: lb://microservice_1
+          predicates:
+            - Path=/api/microservice_1/dashboard/users
+          filters:
+            - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: microservice_1
+            - RewritePath=/api/dashboard/users, /dashboard/users
+
+        - id: microservice_2
+          uri: lb://microservice_2
+          predicates:
+            - Path=/api/microservice_2/dashboard/apikeys
+          filters:
+            - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: microservice_2
+            - RewritePath=/api/dashboard/apikeys, /dashboard/apikeys

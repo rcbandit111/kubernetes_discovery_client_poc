@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: microservice_1
+  jackson:
+    time-zone: UTC
+
+server:
+  port: ${port:8138}
